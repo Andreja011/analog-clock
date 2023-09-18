@@ -23,21 +23,22 @@ const handMinutes = document.querySelector('.hand.minutes');
 const handSeconds = document.querySelector('.hand.seconds');
 
 function getCurrentTime() {
-	let date = new Date();
-	let currentHours = date.getHours() * 3600;
-	let currentMinutes = date.getMinutes() * 60;
-	let currentSeconds = date.getSeconds();
+	const date = new Date();
+	const currentHours = date.getHours();
+	const currentMinutes = date.getMinutes();
+	const currentSeconds = date.getSeconds();
+  const currentMilliseconds = date.getMilliseconds();
 
-	handHours.style.transform = `rotate(${
-		currentHours * 30 + currentMinutes / 2
-	}deg)`;
-	handMinutes.style.transform = `rotate(${currentMinutes * 6}deg)`;
-
-	handSeconds.style.transform = ` rotate(${currentSeconds * 6}deg)`;
-
-	handHours.style.animationDelay = '-' + currentHours + 's';
-	handMinutes.style.animationDelay = '-' + currentMinutes + 's';
-	handSeconds.style.animationDelay = '-' + currentSeconds + 's';
+	handHours.style.animationDelay = `-${(43200/12 * (currentHours%12) + 43200/12 * currentMinutes/60)}s`;
+	// Since animation-duration is set to 3600s at .hands-box .minutes
+	// We should transform [0, 60] -> [0s, 3600s]
+	// Example 1: handle points on 0 -> `-0s`
+	// Example 2: handle points on 3 -> `-180s`
+	// Example 3: handle points on 60 -> `-3600s`
+	// So formula is: 3600 / 60 * currentMinutes + correctionForSeconds
+	// correctionForSeconds is number between 0 and 3600 / 60
+	handMinutes.style.animationDelay = `-${(3600 / 60 * (currentMinutes) + 3600/60*currentSeconds/60)}s`;
+	handSeconds.style.animationDelay = `-${(1000*currentSeconds + currentMilliseconds)}ms`;
 }
 
 const dateWindow = document.querySelector('.date-window');
