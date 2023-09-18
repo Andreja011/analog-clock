@@ -27,9 +27,11 @@ function getCurrentTime() {
 	const currentHours = date.getHours();
 	const currentMinutes = date.getMinutes();
 	const currentSeconds = date.getSeconds();
-  const currentMilliseconds = date.getMilliseconds();
+	const currentMilliseconds = date.getMilliseconds();
 
-	handHours.style.animationDelay = `-${(43200/12 * (currentHours%12) + 43200/12 * currentMinutes/60)}s`;
+	handHours.style.animationDelay = `-${
+		(43200 / 12) * (currentHours % 12) + ((43200 / 12) * currentMinutes) / 60
+	}s`;
 	// Since animation-duration is set to 3600s at .hands-box .minutes
 	// We should transform [0, 60] -> [0s, 3600s]
 	// Example 1: handle points on 0 -> `-0s`
@@ -37,8 +39,12 @@ function getCurrentTime() {
 	// Example 3: handle points on 60 -> `-3600s`
 	// So formula is: 3600 / 60 * currentMinutes + correctionForSeconds
 	// correctionForSeconds is number between 0 and 3600 / 60
-	handMinutes.style.animationDelay = `-${(3600 / 60 * (currentMinutes) + 3600/60*currentSeconds/60)}s`;
-	handSeconds.style.animationDelay = `-${(1000*currentSeconds + currentMilliseconds)}ms`;
+	handMinutes.style.animationDelay = `-${
+		(3600 / 60) * currentMinutes + ((3600 / 60) * currentSeconds) / 60
+	}s`;
+	handSeconds.style.animationDelay = `-${
+		1000 * currentSeconds + currentMilliseconds
+	}ms`;
 }
 
 const dateWindow = document.querySelector('.date-window');
